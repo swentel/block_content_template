@@ -26,8 +26,8 @@ function block_content_template_theme() {
 function block_content_template_block_content_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
   // Add theming function when
   // - the block is rendered through the layout builder
-  // - the view mode is default, which probably means this is rendered by a view
-  if (isset($build['_layout_builder']) || $build['#view_mode'] == 'default') {
+  // - or the block entity has a view property
+  if (isset($build['_layout_builder']) || isset($entity->view)) {
     $build['#theme'] = 'block_content_template';
   }
 }

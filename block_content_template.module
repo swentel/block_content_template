@@ -1,0 +1,63 @@
+<?php
+
+/**
+ * @file
+ * Block content template functionality.
+ */
+
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Render\Element;
+
+/**
+ * Implements hook_theme().
+ */
+function block_content_template_theme() {
+  return [
+    'block_content_template' => [
+      'render element' => 'elements',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_ENTITY_TYPE_view_alter() for block_content.
+ */
+function block_content_template_block_content_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
+  // Add theming function when
+  // - the block is rendered through the layout builder
+  // - the view mode is default, which probably means this is rendered by a view
+  if (isset($build['_layout_builder']) || $build['#view_mode'] == 'default') {
+    $build['#theme'] = 'block_content_template';
+  }
+}
+
+/**
+ * Preprocess function for block content template.
+ */
+function template_preprocess_block_content_template(&$variables) {
+  $variables['content'] = [];
+  if (isset($variables['elements']['_layout_builder'])) {
+    $variables['content'][] = $variables['elements']['_layout_builder'];
+  }
+  else {
+    $content = [];
+    foreach (Element::children($variables) as $key) {
+      $content[] = $variables[$key];
+    }
+    $variables['content'] = $content;
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_HOOK().
+ */
+function block_content_template_theme_suggestions_block_content_template(array $variables) {
+  $suggestions = [];
+  $block_content = $variables['elements']['#block_content'];
+
+  $suggestions[] = 'block_content_template__' . $block_content->bundle();
+  $suggestions[] = 'block_content_template__' . $block_content->id();
+
+  return $suggestions;
+}

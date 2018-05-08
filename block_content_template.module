@@ -25,9 +25,10 @@ function block_content_template_theme() {
  */
 function block_content_template_block_content_view_alter(array &$build, EntityInterface $entity, EntityViewDisplayInterface $display) {
   // Add theming function when
-  // - the block is rendered through the layout builder
-  // - or the block entity has a view property
-  if (isset($build['_layout_builder']) || isset($entity->view)) {
+  // - the $build has a _layout_builder property
+  // - the block entity has a view property
+  // - the block entity has a _referringItem property
+  if (isset($build['_layout_builder']) || isset($entity->view) || isset($entity->_referringItem)) {
     $build['#theme'] = 'block_content_template';
   }
 }

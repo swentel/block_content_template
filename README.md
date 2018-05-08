@@ -5,8 +5,13 @@ a node for instance with the new layout builder works fine, or rendering with vi
 from the frontend directly because there are no contextual links, even though the $build contains those!
 
 This module alters the rendering of a content block by adding a theming function with suggestions per block type and id
-Important, this only happens within the layout builder context or views, see
-block_content_template_block_content_view_alter().
+Important, this only happens within following contexts:
+
+- views
+- entity reference
+- layout builder
+
+see block_content_template_block_content_view_alter().
 
 Theming suggestions:
 

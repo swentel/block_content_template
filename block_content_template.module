@@ -42,16 +42,10 @@ function template_preprocess_block_content(&$variables) {
 
   $variables['label'] = $variables['block_content']->label();
 
-  $variables['content'] = [];
-  if (isset($variables['elements']['_layout_builder'])) {
-    $variables['content'][] = $variables['elements']['_layout_builder'];
-  }
-  else {
-    $content = [];
-    foreach (Element::children($variables) as $key) {
-      $content[] = $variables[$key];
-    }
-    $variables['content'] = $content;
+  // Helpful $content variable for templates.
+  $variables += ['content' => []];
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
   }
 
   // Remove quick edit as it doesn't make sense here. It also points to the view

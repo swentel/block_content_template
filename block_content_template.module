@@ -37,6 +37,11 @@ function block_content_template_block_content_view_alter(array &$build, EntityIn
  * Implements hook_preprocess_HOOK() for "block_content".
  */
 function template_preprocess_block_content(&$variables) {
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
+  $variables['block_content'] = $variables['elements']['#block_content'];
+
+  $variables['label'] = $variables['block_content']->label();
+
   $variables['content'] = [];
   if (isset($variables['elements']['_layout_builder'])) {
     $variables['content'][] = $variables['elements']['_layout_builder'];

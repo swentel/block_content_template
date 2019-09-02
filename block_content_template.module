@@ -14,7 +14,7 @@ use Drupal\Core\Render\Element;
  */
 function block_content_template_theme() {
   return [
-    'block_content_template' => [
+    'block_content' => [
       'render element' => 'elements',
     ],
   ];
@@ -29,14 +29,14 @@ function block_content_template_block_content_view_alter(array &$build, EntityIn
   // - the block entity has a view property
   // - the block entity has a _referringItem property
   if (isset($build['_layout_builder']) || isset($entity->view) || isset($entity->_referringItem)) {
-    $build['#theme'] = 'block_content_template';
+    $build['#theme'] = $entity->getEntityTypeId();
   }
 }
 
 /**
- * Preprocess function for block content template.
+ * Implements hook_preprocess_HOOK() for "block_content".
  */
-function template_preprocess_block_content_template(&$variables) {
+function template_preprocess_block_content(&$variables) {
   $variables['content'] = [];
   if (isset($variables['elements']['_layout_builder'])) {
     $variables['content'][] = $variables['elements']['_layout_builder'];
@@ -57,14 +57,14 @@ function template_preprocess_block_content_template(&$variables) {
 }
 
 /**
- * Implements hook_theme_suggestions_HOOK().
+ * Implements hook_theme_suggestions_HOOK() for "block_content".
  */
-function block_content_template_theme_suggestions_block_content_template(array $variables) {
+function block_content_template_theme_suggestions_block_content(array $variables) {
   $suggestions = [];
   $block_content = $variables['elements']['#block_content'];
 
-  $suggestions[] = 'block_content_template__' . $block_content->bundle();
-  $suggestions[] = 'block_content_template__' . $block_content->id();
+  $suggestions[] = 'block_content__' . $block_content->bundle();
+  $suggestions[] = 'block_content__' . $block_content->id();
 
   return $suggestions;
 }

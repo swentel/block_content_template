@@ -1,3 +1,5 @@
+Unmaintained: feel free to fork and take over completely.
+
 # Block content template for Drupal 8
 
 Block content entities are not rendered within a template outside the block rendering system. Placing a content block in

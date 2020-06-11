@@ -1,4 +1,4 @@
-Unmaintained: feel free to fork and take over completely.
+Unmaintained: feel free to take over completely.
 
 # Block content template for Drupal 8
 

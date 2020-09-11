@@ -43,7 +43,14 @@ function template_preprocess_block_content_template(&$variables) {
   }
   else {
     $content = [];
-    foreach (Element::children($variables) as $key) {
+    $vars = $variables;
+    // Remove all not valid render keys.
+    foreach ($vars as $key => $var) {
+      if (($key === '' || $key[0] !== '#') && !is_array($var)) {
+        unset($vars[$key]);
+      }
+    }
+    foreach (Element::children($vars) as $key) {
       $content[] = $variables[$key];
     }
     $variables['content'] = $content;

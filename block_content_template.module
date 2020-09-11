@@ -14,7 +14,7 @@ use Drupal\Core\Render\Element;
  */
 function block_content_template_theme() {
   return [
-    'block_content_template' => [
+    'block_content' => [
       'render element' => 'elements',
     ],
   ];
@@ -29,42 +29,39 @@ function block_content_template_block_content_view_alter(array &$build, EntityIn
   // - the block entity has a view property
   // - the block entity has a _referringItem property
   if (isset($build['_layout_builder']) || isset($entity->view) || isset($entity->_referringItem)) {
-    $build['#theme'] = 'block_content_template';
+    $build['#theme'] = $entity->getEntityTypeId();
   }
 }
 
 /**
- * Preprocess function for block content template.
+ * Implements hook_preprocess_HOOK() for "block_content".
  */
-function template_preprocess_block_content_template(&$variables) {
-  $variables['content'] = [];
-  if (isset($variables['elements']['_layout_builder'])) {
-    $variables['content'][] = $variables['elements']['_layout_builder'];
-  }
-  else {
-    $content = [];
-    foreach (Element::children($variables) as $key) {
-      $content[] = $variables[$key];
-    }
-    $variables['content'] = $content;
-  }
+function template_preprocess_block_content(&$variables) {
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
+  $variables['block_content'] = $variables['elements']['#block_content'];
 
-  // Remove quick edit as it doesn't make sense here. It also points to the view
-  // for instance, which doesn't make sense at all.
-  if (isset($variables['attributes']['data-quickedit-entity-id'])) {
-    unset($variables['attributes']['data-quickedit-entity-id']);
+  $variables['label'] = $variables['block_content']->label();
+
+  // Helpful $content variable for templates.
+  $variables += ['content' => []];
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
   }
 }
 
 /**
- * Implements hook_theme_suggestions_HOOK().
+ * Implements hook_theme_suggestions_HOOK() for "block_content".
  */
-function block_content_template_theme_suggestions_block_content_template(array $variables) {
+function block_content_template_theme_suggestions_block_content(array $variables) {
   $suggestions = [];
   $block_content = $variables['elements']['#block_content'];
+  $sanitized_view_mode = strtr($variables['elements']['#view_mode'], '.', '_');
 
-  $suggestions[] = 'block_content_template__' . $block_content->bundle();
-  $suggestions[] = 'block_content_template__' . $block_content->id();
+  $suggestions[] = 'block_content__' . $sanitized_view_mode;
+  $suggestions[] = 'block_content__' . $block_content->bundle();
+  $suggestions[] = 'block_content__' . $block_content->bundle() . '__' . $sanitized_view_mode;
+  $suggestions[] = 'block_content__' . $block_content->id();
+  $suggestions[] = 'block_content__' . $block_content->id() . '__' . $sanitized_view_mode;
 
   return $suggestions;
 }
